@@ -1,0 +1,64 @@
+version: '3.8'
+
+services:
+  app:
+    image: app_service
+    deploy:
+      mode: replicated
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+      resources:
+        limits:
+          cpus: '0.1'
+          memory: 50M
+        reservations:
+          cpus: '0.1'
+          memory: 25M
+    ports:
+      - "5000:5000"
+
+  prometheus:
+    image: prom/prometheus:latest
+    volumes:
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+      - ./prometheus//alert_rules.yml:/etc/prometheus/alert_rules.yml
+    ports:
+      - "9090:9090"
+
+  cadvisor:
+    image: gcr.io/cadvisor/cadvisor:v0.45.0
+    container_name: cadvisor
+    privileged: true
+    devices:
+      - /dev/kmsg:/dev/kmsg
+    volumes:
+      - /var/run:/var/run:ro
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - /etc/machine-id:/etc/machine-id:ro
+      - /var/lib/dbus/machine-id:/var/lib/dbus/machine-id:ro
+    command: ["--enable_load_reader=true"]
+    restart: unless-stopped
+    expose:
+      - 8080
+
+  alertmanager:
+    image: prom/alertmanager:latest
+    volumes:
+      - ./prometheus/alertmanager.yml:/etc/alertmanager/alertmanager.yml
+    ports:
+      - "9093:9093"
+
+  autoscaler:
+    image: app_service_scaler
+    ports:
+      - "5033:5000"
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock"
+
+  app_monitor:
+    image: app_monitor
+    ports:
+      - "5011:5000"

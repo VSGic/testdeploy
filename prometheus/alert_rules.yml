@@ -1,0 +1,13 @@
+groups:
+  - name: requests_flask_alert
+    rules:
+      - alert: HighRequestLatency
+        expr: increase(flask_http_request_duration_seconds_sum[1m]) / increase(flask_http_request_duration_seconds_count[1m]) > 0.00015
+        for: 1m
+        labels:
+          severity: load
+        annotations:
+          summary: "High request latency"
+          description: "The average request latency is higher than 0.00015 seconds for more than 1 minute."
+
+

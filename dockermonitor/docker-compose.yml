@@ -1,0 +1,8 @@
+version: '3.8'
+
+services:
+  app_monitor:
+    image: app_monitor
+    ports:
+      - "5011:5000"
+

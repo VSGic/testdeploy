@@ -1,0 +1,10 @@
+version: '3.8'
+
+services:
+  autoscaler:
+    image: app_service_scaler
+    ports:
+      - "5033:5000"
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock"
+

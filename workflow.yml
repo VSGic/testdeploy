@@ -1,0 +1,31 @@
+name: Docker Swarm Deployment
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Build Docker Images
+        run: |
+          docker build -t app_service .
+          docker build . -t app_service_scaler -f dockerscale/Dockerfile
+          docker build . -t app_monitor -f dockermonitor/Dockerfile
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Deploy to Docker Swarm
+        run: |
+          docker stack deploy -c docker-compose.swarm.yml testdeploy
+
