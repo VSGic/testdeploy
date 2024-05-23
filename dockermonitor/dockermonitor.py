@@ -8,7 +8,7 @@ cpu_load_threshold_up = 80
 cpu_load_threshold_down = 50
 
 prometheus_client = prometheus_api_client.prometheus_connect.PrometheusConnect(prometheus_url)
-time.sleep(60)
+time.sleep(120)
 
 def get_cpu_usage():
     query = 'rate(container_cpu_usage_seconds_total{container_label_com_docker_swarm_service_name="testdeploy_app"}[1m]) * 1000'

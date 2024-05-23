@@ -11,7 +11,7 @@ services:
       --headless
       -u 500
       -r 500 
-      -t 180
+      -t 300
       --host http://app:5000
     networks:
       - testdeploy_app_network

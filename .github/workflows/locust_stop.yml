@@ -1,0 +1,19 @@
+name: Locust stack
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  start_locust:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+  
+      - name: Stop locust
+        run: |
+          docker service rm testdeploy_master
+          docker service rm testdeploy_worker
+

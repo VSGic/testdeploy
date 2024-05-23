@@ -33,8 +33,9 @@ jobs:
       - name: Run tests
         run: | 
           docker stack deploy -c docker-compose.yml testdeploy
+          sleep 120
           docker stack deploy -c ./test/docker-compose.yml testdeploy
-          sleep 200
+          sleep 350
           docker service logs testdeploy_tester
           docker service rm $(docker service ls -q)
 
