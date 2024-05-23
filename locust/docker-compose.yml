@@ -8,10 +8,13 @@ services:
     volumes:
       - ../test:/mnt/locust
     command: -f /mnt/locust/locustfile.py --master -H http://master:8089
+    networks:
+        - app_network
 
   worker:
     image: locustio/locust
     volumes:
       - ../test:/mnt/locust
     command: -f /mnt/locust/locustfile.py --worker --master-host master
-
+    networks:
+        - app_network

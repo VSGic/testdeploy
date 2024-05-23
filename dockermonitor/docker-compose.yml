@@ -3,4 +3,5 @@ version: '3.8'
 services:
   app_monitor:
     image: app_monitor
-
+  networks:
+      - app_network

@@ -15,19 +15,26 @@ services:
           memory: 25M
     ports:
       - "5000:5000"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    networks:
+      - app_network
 
   prometheus:
     image: prom/prometheus:latest
     volumes:
-      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
-      - ./prometheus//alert_rules.yml:/etc/prometheus/alert_rules.yml
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - ./prometheus//alert_rules.yml:/etc/prometheus/alert_rules.yml:ro
     ports:
       - "9090:9090"
+    networks:
+      - app_network
 
   cadvisor:
     image: gcr.io/cadvisor/cadvisor:v0.45.0
-    devices:
-      - /dev/kmsg:/dev/kmsg
     volumes:
       - /var/run:/var/run:ro
       - /sys:/sys:ro
@@ -38,13 +45,17 @@ services:
     command: ["--enable_load_reader=true"]
     expose:
       - 8080
+    networks:
+      - app_network
 
   alertmanager:
     image: prom/alertmanager:latest
     volumes:
-      - ./prometheus/alertmanager.yml:/etc/alertmanager/alertmanager.yml
+      - ./prometheus/alertmanager.yml:/etc/alertmanager/alertmanager.yml:ro
     ports:
       - "9093:9093"
+    networks:
+      - app_network
 
   autoscaler:
     image: app_service_scaler
@@ -52,6 +63,14 @@ services:
       - "5033:5000"
     volumes:
       - "/var/run/docker.sock:/var/run/docker.sock"
+    networks:
+      - app_network
 
   app_monitor:
     image: app_monitor
+    networks:
+      - app_network
+
+networks:
+  app_network:
+    driver: overlay

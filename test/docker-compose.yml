@@ -4,7 +4,7 @@ services:
   tester:
     image: locustio/locust
     volumes:
-      - ./:/mnt/locust
+      - ./:/mnt/locust:ro
     command: >
       -f /mnt/locust/locustfile.py 
       --only-summary
@@ -14,3 +14,5 @@ services:
       -t 180
       --html app_loadreport
       --host http://app:5000
+    networks:
+      - app_network

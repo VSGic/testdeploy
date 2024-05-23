@@ -5,9 +5,6 @@ import platform
 app = Flask(__name__)
 metrics = PrometheusMetrics(app)
 
-cpu_load_metric = metrics.info('cpu_load', 'CPU load over time')
-cpu_quota_metric = metrics.info('cpu_quota', 'CPU quota used percentage')
-
 @app.route('/state')
 
 def server_state():
@@ -27,7 +24,10 @@ def server_state():
 def custom_metrics():
     return metrics.export(), 200
 
+@app.route('/health', methods=['GET'])
 
+def health():
+    return jsonify({"status": "ok"}), 200
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)

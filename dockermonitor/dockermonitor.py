@@ -5,10 +5,10 @@ import time
 prometheus_url = "http://prometheus:9090"
 
 cpu_load_threshold_up = 80
-cpu_load_threshold_down = 20
+cpu_load_threshold_down = 50
 
 prometheus_client = prometheus_api_client.prometheus_connect.PrometheusConnect(prometheus_url)
-time.sleep(180)
+time.sleep(60)
 
 def get_cpu_usage():
     query = 'rate(container_cpu_usage_seconds_total{container_label_com_docker_swarm_service_name="testdeploy_app"}[1m]) * 1000'
@@ -34,8 +34,7 @@ def main():
         elif int(cpu_usage) < cpu_load_threshold_down:
             send_post_request("http://autoscaler:5000/scale/down", {'':''})
         time.sleep(60)
-
-
+    
 if __name__ == "__main__":
     main()
 

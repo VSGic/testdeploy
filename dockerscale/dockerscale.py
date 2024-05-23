@@ -7,6 +7,7 @@ client = docker.from_env()
 SERVICE_NAME = 'testdeploy_app'
 
 @app.route('/scale/up', methods=['POST'])
+
 def scale_up():
     try:
         service = client.services.get(SERVICE_NAME)
@@ -19,6 +20,7 @@ def scale_up():
         return jsonify({'status': 'error', 'message': str(e)}), 500
 
 @app.route('/scale/down', methods=['POST'])
+
 def scale_down():
     try:
         service = client.services.get(SERVICE_NAME)
@@ -29,18 +31,10 @@ def scale_down():
     except Exception as e:
         return jsonify({'status': 'error', 'message': str(e)}), 500
 
-@app.route('/scale/set', methods=['POST'])
-def scale_set():
-    try:
-        data = request.get_json()
-        replicas = data.get('replicas')
-        if replicas is None or not isinstance(replicas, int) or replicas < 1:
-            return jsonify({'status': 'error', 'message': 'Invalid number of replicas'}), 400
-        service = client.services.get(SERVICE_NAME)
-        service.scale(replicas)
-        return jsonify({'status': 'success', 'replicas': replicas}), 200
-    except Exception as e:
-        return jsonify({'status': 'error', 'message': str(e)}), 500
+@app.route('/health', methods=['GET'])
+
+def health():
+    return jsonify({"status": "ok"}), 200
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)
