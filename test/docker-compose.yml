@@ -12,7 +12,10 @@ services:
       -u 500
       -r 500 
       -t 180
-      --html app_loadreport
       --host http://app:5000
     networks:
-      - app_network
+      - testdeploy_app_network
+
+networks:
+  testdeploy_app_network:
+    external: true
