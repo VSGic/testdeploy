@@ -27,5 +27,5 @@ jobs:
 
       - name: Deploy to Docker Swarm
         run: |
-          docker stack deploy -c docker-compose.swarm.yml testdeploy
+          docker stack deploy -c docker-compose.swam.yml testdeploy
 

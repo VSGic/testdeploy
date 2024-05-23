@@ -1,0 +1,22 @@
+name: Manual Load Test
+
+jobs:
+  start_tests:
+    runs-on: ubuntu-latest
+    teps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Run tests
+        run: | 
+          docker service rm $(docker service ls -q)
+          docker build -t app_service .
+          docker build . -t app_service_scaler -f dockerscale/Dockerfile
+          docker build . -t app_monitor -f dockermonitor/Dockerfile
+          docker stack deploy -c docker-compose.swam.yml testdeploy
+          docker stack deploy -c ./test/docker-compose.yml testdeploy
+          sleep 10
+          docker service logs --raw --follow testdeploy_tester > ./locust_output.log &
+          sleep 90
+          docker service rm testdeploy_tester
+          
