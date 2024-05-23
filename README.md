@@ -1,5 +1,7 @@
 # testdeploy
 
+Notice: test script takes aproximatelly 7-9 minutes
+
 Intro
 Simple python application with Flask framework managed with docker compose, docker swarm, and CI/CD Github actions(tested with act tool on ARM MacOS)
 
