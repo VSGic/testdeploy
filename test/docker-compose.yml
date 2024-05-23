@@ -1,23 +1,16 @@
 version: '3'
 
 services:
-  master:
-    image: locustio/locust
-    ports:
-     - "8089:8089"
-    volumes:
-      - ./:/mnt/locust
-    command: -f /mnt/locust/locustfile.py --master -H http://master:8089
-  
-
-  worker:
+  tester:
     image: locustio/locust
     volumes:
       - ./:/mnt/locust
-    command: -f /mnt/locust/locustfile.py --worker --master-host master
-
-#  tester:
-#    image: locustio/locust
-#    volumes:
-#      - ./:/mnt/locust
-#    command: -f /mnt/locust/locustfile.py --headless -u 1000 -r 1000 -t 120 --host http://haproxy:80
+    command: >
+      -f /mnt/locust/locustfile.py 
+      --only-summary
+      --headless
+      -u 500
+      -r 500 
+      -t 60
+      --html app_loadreport
+      --host http://app:5000
