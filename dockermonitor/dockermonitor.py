@@ -4,8 +4,6 @@ import time
 
 prometheus_url = "http://prometheus:9090"
 
-service_name = "app"
-
 cpu_load_threshold_up = 80
 cpu_load_threshold_down = 20
 
@@ -32,9 +30,9 @@ def main():
         cpu_usage = get_cpu_usage()
         print(cpu_usage)
         if int(cpu_usage) > cpu_load_threshold_up:
-            send_post_request("http://autoscaler:5000/scale/up", {"cpu_usage": cpu_usage})
+            send_post_request("http://autoscaler:5000/scale/up")
         elif int(cpu_usage) < cpu_load_threshold_down:
-            send_post_request("http://autoscaler:5000/scale/down", {"cpu_usage": cpu_usage})
+            send_post_request("http://autoscaler:5000/scale/down")
         time.sleep(60)
 
 

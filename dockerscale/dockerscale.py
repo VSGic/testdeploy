@@ -4,8 +4,7 @@ import docker
 app = Flask(__name__)
 client = docker.from_env()
 
-# Configuration
-SERVICE_NAME = 'testdeploy_app'
+SERVICE_NAME = 'app'
 
 @app.route('/scale/up', methods=['POST'])
 def scale_up():
@@ -40,15 +39,6 @@ def scale_set():
         service = client.services.get(SERVICE_NAME)
         service.scale(replicas)
         return jsonify({'status': 'success', 'replicas': replicas}), 200
-    except Exception as e:
-        return jsonify({'status': 'error', 'message': str(e)}), 500
-
-@app.route('/scale/get', methods=['GET'])
-def scale_get():
-    try:
-        service = client.services.get(SERVICE_NAME)
-        current_replicas = service.attrs['Spec']['Mode']['Replicated']['Replicas']
-        return jsonify({'status': 'success', 'replicas': current_replicas}), 200
     except Exception as e:
         return jsonify({'status': 'error', 'message': str(e)}), 500
 

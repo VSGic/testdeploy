@@ -1,9 +1,5 @@
 from flask import Flask, jsonify
-import platform
-import socket
-from datetime import datetime
 from prometheus_flask_exporter import PrometheusMetrics
-import psutil
 
 app = Flask(__name__)
 metrics = PrometheusMetrics(app)
@@ -28,12 +24,6 @@ def server_state():
 @app.route('/metrics')
 
 def custom_metrics():
-
-    cpu_load = psutil.cpu_percent(interval=1)
-    cpu_quota = 10
-    cpu_load_metric.set(cpu_load)
-    cpu_quota_metric.set(cpu_load / cpu_quota * 100)
-
     return metrics.export(), 200
 
 
