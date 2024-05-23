@@ -1,5 +1,6 @@
 from flask import Flask, jsonify
 from prometheus_flask_exporter import PrometheusMetrics
+import platform
 
 app = Flask(__name__)
 metrics = PrometheusMetrics(app)

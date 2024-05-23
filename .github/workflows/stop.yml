@@ -1,0 +1,17 @@
+name: Stop all
+
+on:
+  push:
+    branches:
+      - main
+  
+jobs: 
+   stop_all:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Start locust
+        run: |
+          docker service rm $(docker service ls -q) 

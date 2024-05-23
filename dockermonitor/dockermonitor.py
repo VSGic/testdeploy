@@ -30,9 +30,9 @@ def main():
         cpu_usage = get_cpu_usage()
         print(cpu_usage)
         if int(cpu_usage) > cpu_load_threshold_up:
-            send_post_request("http://autoscaler:5000/scale/up")
+            send_post_request("http://autoscaler:5000/scale/up", {'':''})
         elif int(cpu_usage) < cpu_load_threshold_down:
-            send_post_request("http://autoscaler:5000/scale/down")
+            send_post_request("http://autoscaler:5000/scale/down", {'':''})
         time.sleep(60)
 
 

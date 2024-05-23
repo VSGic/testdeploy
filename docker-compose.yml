@@ -6,8 +6,6 @@ services:
     deploy:
       mode: replicated
       replicas: 1
-      restart_policy:
-        condition: on-failure
       resources:
         limits:
           cpus: '0.1'
@@ -28,8 +26,6 @@ services:
 
   cadvisor:
     image: gcr.io/cadvisor/cadvisor:v0.45.0
-    container_name: cadvisor
-    privileged: true
     devices:
       - /dev/kmsg:/dev/kmsg
     volumes:
@@ -40,7 +36,6 @@ services:
       - /etc/machine-id:/etc/machine-id:ro
       - /var/lib/dbus/machine-id:/var/lib/dbus/machine-id:ro
     command: ["--enable_load_reader=true"]
-    restart: unless-stopped
     expose:
       - 8080
 

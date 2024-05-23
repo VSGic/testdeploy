@@ -1,0 +1,19 @@
+name: Locust stack
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  start_locust:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Start locust
+        run: |
+          docker stack deploy -c ./locust/docker-compose.yml testdeploy
+
+

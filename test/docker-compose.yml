@@ -9,8 +9,8 @@ services:
       -f /mnt/locust/locustfile.py 
       --only-summary
       --headless
-      -u 300
-      -r 300 
+      -u 500
+      -r 500 
       -t 180
       --html app_loadreport
       --host http://app:5000

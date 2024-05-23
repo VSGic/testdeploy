@@ -4,7 +4,7 @@ import docker
 app = Flask(__name__)
 client = docker.from_env()
 
-SERVICE_NAME = 'app'
+SERVICE_NAME = 'testdeploy_app'
 
 @app.route('/scale/up', methods=['POST'])
 def scale_up():

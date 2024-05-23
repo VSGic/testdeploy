@@ -1,7 +1,9 @@
 name: App Deployment
 
 on:
-  workflow_dispatch:
+  push:
+    branches:
+      - main
 
 jobs:
   build:
@@ -9,7 +11,7 @@ jobs:
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v2
-
+      
       - name: Build Docker Images
         run: |
           docker build -t app_service .
@@ -20,28 +22,30 @@ jobs:
     runs-on: ubuntu-latest
     needs: build
     steps:
-      - name: Run tests
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Stop previous
+        continue-on-error: true
         run: |
-          docker stack deploy -c ./docker-compose.swam.yml testdeploy
+          docker service rm $(docker service ls -q)
+
+      - name: Run tests
+        run: | 
+          docker stack deploy -c docker-compose.yml testdeploy
           docker stack deploy -c ./test/docker-compose.yml testdeploy
           sleep 200
           docker service logs testdeploy_tester
           docker service rm $(docker service ls -q)
 
-
   deploy:
     runs-on: ubuntu-latest
-    needs: build
+    needs: start_tests
     steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
       - name: Deploy to Docker Swarm
         run: |
-          docker stack deploy -c ./docker-compose.swam.yml testdeploy
+          docker stack deploy -c docker-compose.yml testdeploy
 
-  start_locust:
-    if: github.event_name == 'workflow_dispatch'
-    needs: deploy
-    runs-on: ubuntu-latest
-    steps:
-      - name: Start locust
-        run: |
-          docker stack deploy -c ./test/locust_server/docker-compose.yml testdeploy
